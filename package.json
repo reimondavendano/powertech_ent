@@ -4,8 +4,9 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build --base-href=/browser/",
-    "deploy": "ng deploy --base-href=/browser/"
+    "build": "ng build --base-href=/powertech_ent/",
+   "deploy-ghpages": "npm run build && npm run copy-for-ghpages",
+    "copy-for-ghpages": "powershell -Command \"If (Test-Path -Path 'docs/browser') { Get-ChildItem -Path 'docs/browser/*' -Recurse -Force | Move-Item -Destination 'docs/' -Force -ErrorAction SilentlyContinue; Remove-Item -Path 'docs/browser' -Recurse -Force -ErrorAction SilentlyContinue }; Copy-Item -Path 'docs/index.html' -Destination 'docs/404.html' -Force -ErrorAction SilentlyContinue\""
   },
   "dependencies": {
     "@angular/animations": "^20.0.0",
