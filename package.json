@@ -4,8 +4,8 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build --base-href=/powertech_ent/",
-    "deploy": "ng deploy --base-href=/powertech_ent/"
+    "build": "ng build --base-href=/browser/",
+    "deploy": "ng deploy --base-href=/browser/"
   },
   "dependencies": {
     "@angular/animations": "^20.0.0",
