@@ -5,7 +5,7 @@
   },
   "newProjectRoot": "projects",
   "projects": {
-    "demo": {
+    "powertech_ent": {
       "architect": {
         "build": {
           "builder": "@angular/build:application",
