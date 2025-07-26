@@ -1,0 +1,9 @@
+.router-link-active {
+  color: var(--primary-red) !important;
+}
+
+/* You might want to define --primary-red in a global style file or index.html if it's not already defined by your framework/setup. */
+/* Example:
+:root {
+  --primary-red: #ef4444; /* Tailwind's red-500 */
+/* } */

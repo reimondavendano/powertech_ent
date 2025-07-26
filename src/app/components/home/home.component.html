@@ -1,0 +1,132 @@
+<app-header></app-header>
+<section class="bg-gradient-to-r from-black via-red-900 to-black text-white py-32 circuit-pattern flex items-center justify-center">
+  <div class="container mx-auto px-4 text-center">
+    <h1 class="text-6xl md:text-7xl font-bold mb-6 text-stroke-black">
+      COMPUTER PARTS AND ACCESSORIES
+    </h1>
+
+    <h2 class="text-3xl md:text-4xl font-semibold mb-4 text-stroke-black">
+      BRANDNEW LAPTOP & PRINTERS
+    </h2>
+    <p class="text-xl mb-8 text-gray-200 text-black">WHOLESALE AND RETAIL</p>
+    <div class="flex flex-col sm:flex-row gap-4 justify-center">
+      <a routerLink="/products" class="btn btn-primary text-lg px-8 py-3">
+        View Products
+      </a>
+      <a routerLink="/inquiry" class="btn btn-outline text-lg px-8 py-3 border-white text-white hover:bg-white hover:text-black">
+        Make Inquiry
+      </a>
+    </div>
+  </div>
+</section>
+
+<section class="py-16 bg-white"> <!-- Added mt-12 here for margin-top -->
+  <div class="container mx-auto px-4">
+    <div class="text-center mb-12">
+      <h2 class="text-4xl font-bold text-black mb-4">Featured Products</h2>
+      <p class="text-xl text-gray-600">Discover our latest computer parts and accessories</p>
+    </div>
+
+    <!-- Featured Products Slider -->
+    <div *ngIf="featuredProducts.length > 0" class="relative h-full"> <!-- Added h-full here -->
+      <!-- Slider Container -->
+      <div class="slider-container">
+        <div class="slider-track" [style.transform]="'translateX(-' + (currentSlideIndex * 100) + '%)'">
+          <div *ngFor="let product of featuredProducts; trackBy: trackByProductId" class="slider-item">
+            <div class="card p-6 hover:shadow-xl transition-all duration-300 h-full flex flex-col">
+              <div class="aspect-square bg-gray-100 rounded-lg mb-4 flex items-center justify-center overflow-hidden relative">
+                <img *ngIf="product.image_url" [src]="product.image_url" [alt]="product.name" 
+                     class="w-full h-full object-cover rounded-lg">
+                <div *ngIf="!product.image_url" class="text-gray-400 text-center">
+                  <svg class="w-16 h-16 mx-auto mb-2" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd"/>
+                  </svg>
+                  <p class="text-sm">No Image</p>
+                </div>
+              </div>
+              <h3 class="text-lg font-semibold text-black mb-2">{{ product.name }}</h3>
+              <p class="text-gray-600 text-sm mb-3 line-clamp-2 flex-grow">{{ product.description }}</p>
+              <div class="flex items-center justify-between mt-auto">
+                <span class="text-2xl font-bold text-red-600">₱{{ product.price | number:'1.2-2' }}</span>
+                <span class="text-sm text-gray-500">Stock: {{ product.stock }}</span>
+              </div>
+              <button (click)="openInquiry(product)" class="btn btn-primary w-full mt-4">
+                Inquire Now
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+     <!-- Slider Navigation Buttons -->
+      <button 
+        (click)="prevSlide()" 
+        class="absolute top-1/2 left-0 transform -translate-y-1/2 bg-red-600 bg-opacity-50 text-white p-3 rounded-full shadow-lg hover:bg-opacity-75 transition-all duration-300 z-20 ml-2"
+        [disabled]="totalSlides <= 1"
+      >
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+      </button>
+      <button 
+        (click)="nextSlide()" 
+        class="absolute top-1/2 right-0 transform -translate-y-1/2 bg-red-600 bg-opacity-50 text-white p-3 rounded-full shadow-lg hover:bg-opacity-75 transition-all duration-300 z-20 mr-2"
+        [disabled]="totalSlides <= 1"
+      >
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+      </button>
+    </div>
+
+    <div *ngIf="featuredProducts.length === 0" class="text-center py-12">
+      <p class="text-xl text-gray-600">No products available at the moment.</p>
+    </div>
+  </div>
+</section>
+
+<section class="py-16 bg-gray-50">
+  <div class="container mx-auto px-4">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+      <div>
+        <h2 class="text-4xl font-bold text-black mb-6">About PowerTech Enterprises</h2>
+        <p class="text-lg text-gray-700 mb-6 leading-relaxed">
+          PowerTech Enterprises is your trusted I.T. solution partner, specializing in computer parts, 
+          accessories, brand new laptops, and printers. We offer both wholesale and retail services 
+          to meet all your technology needs.
+        </p>
+        <div class="space-y-4">
+          <div class="flex items-center space-x-3">
+            <div class="w-6 h-6 bg-red-600 rounded-full flex items-center justify-center">
+              <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+              </svg>
+            </div>
+            <span class="text-gray-700">Quality computer parts and accessories</span>
+          </div>
+          <div class="flex items-center space-x-3">
+            <div class="w-6 h-6 bg-red-600 rounded-full flex items-center justify-center">
+              <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+              </svg>
+            </div>
+            <span class="text-gray-700">Brand new laptops and printers</span>
+          </div>
+          <div class="flex items-center space-x-3">
+            <div class="w-6 h-6 bg-red-600 rounded-full flex items-center justify-center">
+              <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+              </svg>
+            </div>
+            <span class="text-gray-700">Wholesale and retail services</span>
+          </div>
+        </div>
+      </div>
+      <div class="bg-gradient-to-br from-red-100 to-gray-100 p-8 rounded-2xl">
+        <div class="text-center">
+          <div class="w-24 h-24 bg-gradient-to-br from-red-600 to-black rounded-full flex items-center justify-center mx-auto mb-4">
+            <span class="text-white font-bold text-3xl">PT</span>
+          </div>
+          <h3 class="text-2xl font-bold text-black mb-2">PowerTech</h3>
+          <p class="text-gray-600">Your I.T. Solution Partner</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,20 @@
+.line-clamp-1 {
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Add any additional Tailwind CSS custom classes or utility classes here if needed */
+/* Example: */
+/* .btn {
+  @apply py-2 px-4 rounded-md font-semibold;
+}
+
+.btn-primary {
+  @apply bg-blue-600 text-white hover:bg-blue-700;
+}
+
+.btn-secondary {
+  @apply bg-gray-200 text-gray-800 hover:bg-gray-300;
+} */

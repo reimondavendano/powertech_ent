@@ -1,0 +1,59 @@
+<header class="bg-white shadow-md sticky top-0 z-50">
+  <div class="container mx-auto px-4 py-4">
+    <div class="flex items-center justify-between">
+      <div class="flex items-center space-x-3" routerLink="/" style="cursor: pointer;">
+        <div class="w-12 h-12 bg-gradient-to-br from-red-600 to-black rounded-full flex items-center justify-center">
+          <span class="text-white font-bold text-lg">PT</span>
+        </div>
+        <div>
+          <h1 class="text-2xl font-bold text-black">POWERTECH</h1>
+          <p class="text-sm text-gray-600">YOUR I.T. SOLUTION PARTNER</p>
+        </div>
+      </div>
+
+      <nav class="hidden md:flex items-center space-x-8">
+        <a routerLink="/" routerLinkActive="text-red-600" [routerLinkActiveOptions]="{exact: true}" 
+           class="text-gray-700 hover:text-red-600 font-medium transition-colors">Home</a>
+        <a routerLink="/products" routerLinkActive="text-red-600" 
+           class="text-gray-700 hover:text-red-600 font-medium transition-colors">Products</a>
+        <a routerLink="/inquiry" routerLinkActive="text-red-600" 
+           class="text-gray-700 hover:text-red-600 font-medium transition-colors">Inquiry</a>
+        
+        <div *ngIf="currentUser; else loginButton">
+          <div class="flex items-center space-x-4">
+            <a routerLink="/admin" routerLinkActive="text-red-600" 
+               class="text-gray-700 hover:text-red-600 font-medium transition-colors">Admin</a>
+            <button (click)="logout()" class="btn btn-outline">Logout</button>
+          </div>
+        </div>
+        
+        <ng-template #loginButton>
+          <a routerLink="/login" class="btn btn-primary">Admin Login</a>
+        </ng-template>
+      </nav>
+
+      <button (click)="toggleMobileMenu()" class="md:hidden p-2">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+        </svg>
+      </button>
+    </div>
+
+    <div *ngIf="mobileMenuOpen" class="md:hidden mt-4 pb-4 border-t border-gray-200 pt-4">
+      <div class="flex flex-col space-y-3">
+        <a routerLink="/" (click)="closeMobileMenu()" class="text-gray-700 hover:text-red-600 font-medium">Home</a>
+        <a routerLink="/products" (click)="closeMobileMenu()" class="text-gray-700 hover:text-red-600 font-medium">Products</a>
+        <a routerLink="/inquiry" (click)="closeMobileMenu()" class="text-gray-700 hover:text-red-600 font-medium">Inquiry</a>
+        
+        <div *ngIf="currentUser; else mobileLoginButton">
+          <a routerLink="/admin" (click)="closeMobileMenu()" class="text-gray-700 hover:text-red-600 font-medium block">Admin</a>
+          <button (click)="logout(); closeMobileMenu()" class="btn btn-outline mt-2">Logout</button>
+        </div>
+        
+        <ng-template #mobileLoginButton>
+          <a routerLink="/login" (click)="closeMobileMenu()" class="btn btn-primary">Admin Login</a>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+</header>
