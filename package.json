@@ -5,9 +5,9 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build --base-href=/powertech_ent/",
+    "build": "ng build --configuration production",
     "start:dev": "nest start --watch",
-    "deploy-ghpages": "npm run build --base-href=/powertech_ent/ && npm run copy-for-ghpages",
+    "deploy-ghpages": "npm run build && npm run copy-for-ghpages",
     "copy-for-ghpages": "powershell -Command \"If (Test-Path -Path 'dist/browser') { Get-ChildItem -Path 'dist/browser/*' -Recurse -Force | Move-Item -Destination 'dist/' -Force -ErrorAction SilentlyContinue; Remove-Item -Path 'dist/browser' -Recurse -Force -ErrorAction SilentlyContinue }; Copy-Item -Path 'dist/index.html' -Destination 'dist/404.html' -Force -ErrorAction SilentlyContinue\""
   },
   "dependencies": {
