@@ -1,17 +1,17 @@
 <app-header></app-header>
-<div class="min-h-screen bg-gray-50 py-8">
+<div class="min-h-screen bg-gray-50 flex items-center justify-center py-8">
   <div class="container mx-auto px-4">
     <div class="max-w-2xl mx-auto">
       <div class="text-center mb-8">
-        <h1 class="text-4xl font-bold text-black mb-4">Make an Inquiry</h1>
-        <p class="text-xl text-gray-600">Get in touch with us for product information and quotes</p>
+        <h1 class="text-4xl font-bold text-black mb-4">Chat with PowerTech</h1>
+        <p class="text-xl text-gray-600">Ask us anything about our products and services</p>
       </div>
 
       <div *ngIf="selectedProduct" class="bg-white rounded-lg shadow-md p-6 mb-8">
         <h3 class="text-lg font-semibold text-black mb-3">Inquiring about:</h3>
         <div class="flex items-center space-x-4">
           <div class="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center">
-            <img *ngIf="selectedProduct.image_url" [src]="selectedProduct.image_url" [alt]="selectedProduct.name" 
+            <img *ngIf="selectedProduct.image_url" [src]="selectedProduct.image_url" [alt]="selectedProduct.name"
                  class="w-full h-full object-cover rounded-lg">
             <svg *ngIf="!selectedProduct.image_url" class="w-8 h-8 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
               <path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd"/>
@@ -25,105 +25,50 @@
         </div>
       </div>
 
-            <div *ngIf="showSuccessMessage" class="bg-green-50 border border-green-200 rounded-lg p-6 mt-6">
-        <div class="flex items-center space-x-3">
-          <svg class="w-8 h-8 text-green-600" fill="currentColor" viewBox="0 0 20 20">
-            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-          </svg>
-          <div>
-            <h3 class="text-lg font-semibold text-green-800 mb-1">Inquiry Sent Successfully!</h3>
-            <p class="text-green-700">Thank you for your inquiry. Our team will get back to you within 24 hours.</p>
+      <div class="bg-white rounded-lg shadow-md p-6">
+        <div class="chat-container">
+          <div *ngFor="let message of chatMessages" [ngClass]="{'chat-message-user': message.sender === 'user', 'chat-message-bot': message.sender === 'bot'}">
+            <div [ngClass]="{'bg-blue-500 text-white': message.sender === 'user', 'bg-gray-200 text-gray-800': message.sender === 'bot'}" class="p-3 rounded-lg max-w-[75%]">
+              {{ message.text }}
+            </div>
+          </div>
+          <div *ngIf="isBotTyping" class="chat-message-bot">
+            <div class="bg-gray-200 text-gray-800 p-3 rounded-lg max-w-[75%] flex items-center">
+              <span class="animate-pulse mr-2 text-xl">...</span> Thinking
+            </div>
           </div>
         </div>
-      </div>
 
-      <div *ngIf="errorMessage" class="bg-red-50 border border-red-200 rounded-lg p-6 mt-6">
-        <div class="flex items-center space-x-3">
-          <svg class="w-8 h-8 text-red-600" fill="currentColor" viewBox="0 0 20 20">
-            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
-          </svg>
-          <div>
-            <h3 class="text-lg font-semibold text-red-800 mb-1">Error Sending Inquiry</h3>
-            <p class="text-red-700">{{ errorMessage }}</p>
-          </div>
+        <div *ngIf="showFacebookContact" class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mt-6 text-center">
+          <p class="text-yellow-800 mb-3">
+            It looks like I can't answer that. For more specific inquiries or immediate assistance, please reach out to us on Facebook.
+          </p>
+          <a [href]="facebookPageUrl" target="_blank" class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path fill-rule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.776-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33V22C17.34 21.128 22 16.991 22 12z" clip-rule="evenodd" />
+            </svg>
+            Contact us on Facebook
+          </a>
         </div>
-      </div>
 
-      <div class="bg-white rounded-lg shadow-md p-8">
-        <form (ngSubmit)="submitInquiry()" #inquiryForm="ngForm">
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-            <div class="form-group">
-              <label class="form-label">Full Name *</label>
-              <input 
-                type="text" 
-                [(ngModel)]="inquiry.name" 
-                name="name"
-                required
-                class="form-input"
-                placeholder="Enter your full name"
-              >
-            </div>
-
-            <div class="form-group">
-              <label class="form-label">Email Address *</label>
-              <input 
-                type="email" 
-                [(ngModel)]="inquiry.email" 
-                name="email"
-                required
-                class="form-input"
-                placeholder="Enter your email address"
-              >
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label class="form-label">Phone Number (Optional)</label>
-            <input 
-              type="tel" 
-              [(ngModel)]="inquiry.phone" 
-              name="phone"
-              class="form-input"
-              placeholder="Enter your phone number"
-            >
-          </div>
-
-          <div class="form-group">
-            <label class="form-label">Message *</label>
-            <textarea 
-              [(ngModel)]="inquiry.message" 
-              name="message"
-              required
-              rows="6"
-              class="form-input resize-none"
-              placeholder="Please provide details about your inquiry, including quantity, specific requirements, or any questions you may have..."
-            ></textarea>
-          </div>
-
-          <div class="flex flex-col sm:flex-row items-center justify-between pt-6 border-t border-gray-200">
-            <p class="text-sm text-gray-600 mb-4 sm:mb-0">
-              * Required fields. We'll respond within 24 hours.
-            </p>
-            <div class="flex space-x-4">
-              <button 
-                type="button" 
-                (click)="resetForm()" 
-                class="btn btn-secondary"
-                [disabled]="submitting"
-              >
-                Reset
-              </button>
-              <button 
-                type="submit" 
-                class="btn btn-primary"
-                [disabled]="!inquiryForm.valid || submitting"
-              >
-                <span *ngIf="submitting" class="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></span>
-                {{ submitting ? 'Sending...' : 'Send Inquiry' }}
-              </button>
-            </div>
-          </div>
-        </form>
+        <div class="chat-input-area mt-6 flex space-x-3">
+          <input
+            type="text"
+            [(ngModel)]="currentMessage"
+            (keyup.enter)="sendMessage()"
+            placeholder="Type your message here..."
+            class="form-input flex-1"
+            [disabled]="isBotTyping"
+          >
+          <button
+            (click)="sendMessage()"
+            class="btn btn-primary"
+            [disabled]="!currentMessage.trim() || isBotTyping"
+          >
+            <span *ngIf="isBotTyping" class="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></span>
+            Send
+          </button>
+        </div>
       </div>
     </div>
   </div>
