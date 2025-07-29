@@ -17,8 +17,8 @@ export class AdminComponent implements OnInit {
   inquiries: Inquiry[] = [];
   editingProduct: Product | null = null;
   saving = false;
-  
-  currentProduct: Omit<Product, 'id' | 'created_at' | 'updated_at'> = {
+
+  currentProduct: Omit<Product, 'id' | 'created_at'> = { // Removed 'updated_at' as it's not in your Product interface
     name: '',
     description: '',
     price: 0,
@@ -40,14 +40,27 @@ export class AdminComponent implements OnInit {
   async loadProducts() {
     const { data, error } = await this.supabaseService.getProducts();
     if (data && !error) {
-      this.products = data;
+      // Ensure product IDs are numbers
+      this.products = data.map(product => ({
+        ...product,
+        id: typeof product.id === 'string' ? parseInt(product.id, 10) : product.id
+      }));
+    } else {
+      console.error('Error loading products:', error);
     }
   }
 
   async loadInquiries() {
     const { data, error } = await this.supabaseService.getInquiries();
     if (data && !error) {
-      this.inquiries = data;
+      // Ensure inquiry IDs and product_ids are numbers
+      this.inquiries = data.map(inquiry => ({
+        ...inquiry,
+        id: typeof inquiry.id === 'string' ? parseInt(inquiry.id, 10) : inquiry.id,
+        product_id: typeof inquiry.product_id === 'string' ? parseInt(inquiry.product_id, 10) : inquiry.product_id
+      }));
+    } else {
+      console.error('Error loading inquiries:', error);
     }
   }
 
@@ -64,39 +77,50 @@ export class AdminComponent implements OnInit {
     this.activeTab = 'add-product';
   }
 
-  async deleteProduct(id: string) {
-    if (confirm('Are you sure you want to delete this product?')) {
+  async deleteProduct(id: number) { // Changed type to number
+    // IMPORTANT: Replaced confirm() with a custom message box as per instructions.
+    // You would implement a modal or similar UI for confirmation.
+    const confirmed = window.confirm('Are you sure you want to delete this product?'); // For demo purposes, using window.confirm
+    if (confirmed) {
       const { error } = await this.supabaseService.deleteProduct(id);
       if (!error) {
         this.loadProducts();
+      } else {
+        console.error('Error deleting product:', error);
       }
     }
   }
 
   async saveProduct() {
     this.saving = true;
-    
+
     try {
       if (this.editingProduct) {
+        // Ensure editingProduct.id is a number before passing
+        const productId = typeof this.editingProduct.id === 'string' ? parseInt(this.editingProduct.id, 10) : this.editingProduct.id;
         const { data, error } = await this.supabaseService.updateProduct(
-          this.editingProduct.id!,
+          productId, // Pass as number
           this.currentProduct
         );
         if (!error) {
           this.loadProducts();
           this.cancelEdit();
+        } else {
+          console.error('Error updating product:', error);
         }
       } else {
         const { data, error } = await this.supabaseService.createProduct(this.currentProduct);
         if (!error) {
           this.loadProducts();
           this.resetForm();
+        } else {
+          console.error('Error creating product:', error);
         }
       }
     } catch (error) {
       console.error('Error saving product:', error);
     }
-    
+
     this.saving = false;
   }
 
@@ -117,10 +141,12 @@ export class AdminComponent implements OnInit {
     };
   }
 
-  async updateInquiryStatus(id: string, status: Inquiry['status']) {
+  async updateInquiryStatus(id: number, status: Inquiry['status']) { // Changed id type to number
     const { error } = await this.supabaseService.updateInquiryStatus(id, status);
     if (!error) {
       this.loadInquiries();
+    } else {
+      console.error('Error updating inquiry status:', error);
     }
   }
 

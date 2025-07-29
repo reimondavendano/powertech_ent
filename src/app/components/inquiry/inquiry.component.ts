@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { SupabaseService, Product, Inquiry } from '../../services/supabase.service';
-import { HeaderComponent } from "../header/header.component";
+import { HeaderComponent } from "../header/header.component.js";
 import emailjs from '@emailjs/browser'; // Import EmailJS
 
 @Component({
@@ -19,7 +19,7 @@ export class InquiryComponent implements OnInit {
     name: '',
     email: '',
     phone: '',
-    product_id: '', // Ensure this is initialized as an empty string
+    product_id: null, // Initialize as 0 or null, as it will be set from params
     message: '',
     status: 'pending'
   };
@@ -45,8 +45,15 @@ export class InquiryComponent implements OnInit {
     // Check if there's a product ID in the query params
     this.route.queryParams.subscribe(params => {
       if (params['product']) {
-        this.loadSelectedProduct(params['product']);
-        this.inquiry.product_id = params['product']; // This line is correct
+        const productIdAsNumber = parseInt(params['product'], 10); // Convert string to number
+        if (!isNaN(productIdAsNumber)) {
+          this.loadSelectedProduct(productIdAsNumber); // Pass number to loadSelectedProduct
+          this.inquiry.product_id = productIdAsNumber; // Assign the number
+        } else {
+          console.error('Invalid product ID received from query params:', params['product']);
+          // Handle the case where product ID is not a valid number
+          this.inquiry.product_id = 0; // Or some default/error value
+        }
       }
       if (params['name']) {
         // Pre-fill message with product name
@@ -55,7 +62,7 @@ export class InquiryComponent implements OnInit {
     });
   }
 
-  async loadSelectedProduct(productId: string) {
+  async loadSelectedProduct(productId: number) { // Expect number here
     const { data, error } = await this.supabaseService.getProduct(productId);
     if (data && !error) {
       this.selectedProduct = data;
@@ -72,6 +79,7 @@ export class InquiryComponent implements OnInit {
 
     try {
       // 1. Submit inquiry to Supabase (existing logic)
+      // Ensure product_id is a number here. It should be if set correctly in ngOnInit.
       const { data, error: supabaseError } = await this.supabaseService.createInquiry(this.inquiry);
 
       if (supabaseError) {
@@ -114,7 +122,8 @@ export class InquiryComponent implements OnInit {
       name: '',
       email: '',
       phone: '',
-      product_id: this.selectedProduct ? this.selectedProduct.id : '',
+      // Ensure product_id is a number. If selectedProduct.id is a string, convert it.
+      product_id: this.selectedProduct ? parseInt(this.selectedProduct.id.toString(), 10) : 0, // Convert to number, ensure .id is string-convertible
       message: this.selectedProduct ? `I am interested in ${this.selectedProduct.name}. Please provide more information about pricing and availability.` : '',
       status: 'pending'
     };

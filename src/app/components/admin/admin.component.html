@@ -20,21 +20,21 @@
     <div class="bg-white rounded-lg shadow-md mb-8">
       <div class="border-b border-gray-200">
         <nav class="flex space-x-8 px-6">
-          <button 
+          <button
             (click)="activeTab = 'products'"
             [class]="activeTab === 'products' ? 'border-red-500 text-red-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
             class="py-4 px-1 border-b-2 font-medium text-sm transition-colors"
           >
             Products ({{ products.length }})
           </button>
-          <button 
+          <button
             (click)="activeTab = 'inquiries'"
             [class]="activeTab === 'inquiries' ? 'border-red-500 text-red-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
             class="py-4 px-1 border-b-2 font-medium text-sm transition-colors"
           >
             Inquiries ({{ inquiries.length }})
           </button>
-          <button 
+          <button
             (click)="activeTab = 'add-product'"
             [class]="activeTab === 'add-product' ? 'border-red-500 text-red-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
             class="py-4 px-1 border-b-2 font-medium text-sm transition-colors"
@@ -51,7 +51,7 @@
           <h2 class="text-xl font-semibold text-black">Product Management</h2>
           <p class="text-gray-600 mt-1">Manage your inventory and product information</p>
         </div>
-        
+
         <div class="overflow-x-auto">
           <table class="w-full">
             <thead class="bg-gray-50">
@@ -68,7 +68,7 @@
                 <td class="px-6 py-4">
                   <div class="flex items-center">
                     <div class="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center mr-4">
-                      <img *ngIf="product.image_url" [src]="product.image_url" [alt]="product.name" 
+                      <img *ngIf="product.image_url" [src]="product.image_url" [alt]="product.name"
                            class="w-full h-full object-cover rounded-lg">
                       <svg *ngIf="!product.image_url" class="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
                         <path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd"/>
@@ -89,7 +89,7 @@
                 </td>
                 <td class="px-6 py-4 text-sm space-x-2">
                   <button (click)="editProduct(product)" class="text-blue-600 hover:text-blue-900">Edit</button>
-                  <button (click)="deleteProduct(product.id!)" class="text-red-600 hover:text-red-900">Delete</button>
+                  <button (click)="deleteProduct(product.id)" class="text-red-600 hover:text-red-900">Delete</button>
                 </td>
               </tr>
             </tbody>
@@ -104,7 +104,7 @@
           <h2 class="text-xl font-semibold text-black">Customer Inquiries</h2>
           <p class="text-gray-600 mt-1">Manage customer inquiries and responses</p>
         </div>
-        
+
         <div class="divide-y divide-gray-200">
           <div *ngFor="let inquiry of inquiries" class="p-6 hover:bg-gray-50">
             <div class="flex items-start justify-between">
@@ -125,9 +125,9 @@
                 </div>
               </div>
               <div class="ml-6 flex space-x-2">
-                <select 
-                  [(ngModel)]="inquiry.status" 
-                  (change)="updateInquiryStatus(inquiry.id!, inquiry.status)"
+                <select
+                  [(ngModel)]="inquiry.status"
+                  (change)="updateInquiryStatus(inquiry.id, inquiry.status)"
                   class="text-sm border-gray-300 rounded-md"
                 >
                   <option value="pending">Pending</option>
@@ -151,39 +151,39 @@
             {{ editingProduct ? 'Update product information' : 'Add a new product to your inventory' }}
           </p>
         </div>
-        
+
         <div class="p-6">
           <form (ngSubmit)="saveProduct()" #productForm="ngForm">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div class="form-group">
                 <label class="form-label">Product Name *</label>
-                <input 
-                  type="text" 
-                  [(ngModel)]="currentProduct.name" 
+                <input
+                  type="text"
+                  [(ngModel)]="currentProduct.name"
                   name="name"
                   required
                   class="form-input"
                   placeholder="Enter product name"
                 >
               </div>
-              
+
               <div class="form-group">
                 <label class="form-label">Category *</label>
-                <input 
-                  type="text" 
-                  [(ngModel)]="currentProduct.category" 
+                <input
+                  type="text"
+                  [(ngModel)]="currentProduct.category"
                   name="category"
                   required
                   class="form-input"
                   placeholder="e.g., Laptops, Processors, Memory"
                 >
               </div>
-              
+
               <div class="form-group">
                 <label class="form-label">Price (₱) *</label>
-                <input 
-                  type="number" 
-                  [(ngModel)]="currentProduct.price" 
+                <input
+                  type="number"
+                  [(ngModel)]="currentProduct.price"
                   name="price"
                   required
                   min="0"
@@ -192,12 +192,12 @@
                   placeholder="0.00"
                 >
               </div>
-              
+
               <div class="form-group">
                 <label class="form-label">Stock Quantity *</label>
-                <input 
-                  type="number" 
-                  [(ngModel)]="currentProduct.stock" 
+                <input
+                  type="number"
+                  [(ngModel)]="currentProduct.stock"
                   name="stock"
                   required
                   min="0"
@@ -205,22 +205,22 @@
                   placeholder="0"
                 >
               </div>
-              
+
               <div class="form-group md:col-span-2">
                 <label class="form-label">Image URL (Optional)</label>
-                <input 
-                  type="url" 
-                  [(ngModel)]="currentProduct.image_url" 
+                <input
+                  type="url"
+                  [(ngModel)]="currentProduct.image_url"
                   name="imageUrl"
                   class="form-input"
                   placeholder="https://example.com/image.jpg"
                 >
               </div>
-              
+
               <div class="form-group md:col-span-2">
                 <label class="form-label">Description *</label>
-                <textarea 
-                  [(ngModel)]="currentProduct.description" 
+                <textarea
+                  [(ngModel)]="currentProduct.description"
                   name="description"
                   required
                   rows="4"
@@ -229,17 +229,17 @@
                 ></textarea>
               </div>
             </div>
-            
+
             <div class="flex items-center justify-between pt-6 border-t border-gray-200">
-              <button 
-                type="button" 
-                (click)="cancelEdit()" 
+              <button
+                type="button"
+                (click)="cancelEdit()"
                 class="btn btn-secondary"
               >
                 {{ editingProduct ? 'Cancel' : 'Reset' }}
               </button>
-              <button 
-                type="submit" 
+              <button
+                type="submit"
                 class="btn btn-primary"
                 [disabled]="!productForm.valid || saving"
               >

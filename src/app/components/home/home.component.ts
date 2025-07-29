@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { SupabaseService, Product } from '../../services/supabase.service';
-import { HeaderComponent } from "../header/header.component";
+import { HeaderComponent } from "../header/header.component.js";
 
 @Component({
   selector: 'app-home',
@@ -63,7 +63,7 @@ export class HomeComponent implements OnInit {
   }
 
   // TrackBy function for *ngFor to optimize rendering
-  trackByProductId(index: number, product: Product): string | undefined {
+  trackByProductId(index: number, product: Product): number { // Changed return type to number
     return product.id; // Return the unique ID of the product
   }
 

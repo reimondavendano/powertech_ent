@@ -46,12 +46,12 @@
         <a routerLink="/inquiry" (click)="closeMobileMenu()" class="text-gray-700 hover:text-red-600 font-medium">Inquiry</a>
         
         <div *ngIf="currentUser; else mobileLoginButton">
-          <a routerLink="/admin" (click)="closeMobileMenu()" class="text-gray-700 hover:text-red-600 font-medium block">Admin</a>
+          <!-- <a routerLink="/admin" (click)="closeMobileMenu()" class="text-gray-700 hover:text-red-600 font-medium block">Admin</a> -->
           <button (click)="logout(); closeMobileMenu()" class="btn btn-outline mt-2">Logout</button>
         </div>
         
         <ng-template #mobileLoginButton>
-          <a routerLink="/login" (click)="closeMobileMenu()" class="btn btn-primary">Admin Login</a>
+          <!-- <a routerLink="/login" (click)="closeMobileMenu()" class="btn btn-primary">Admin Login</a> -->
         </ng-template>
       </div>
     </div>

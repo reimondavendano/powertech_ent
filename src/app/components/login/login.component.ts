@@ -8,15 +8,15 @@ import { SupabaseService } from '../../services/supabase.service';
   selector: 'app-login',
   standalone: true,
   imports: [CommonModule, FormsModule],
-  templateUrl: './login.component.html', // Point to external HTML file
-  styleUrls: ['./login.component.css'] // Point to external CSS file
+  templateUrl: './login.component.html',
+  styleUrls: ['./login.component.css']
 })
 export class LoginComponent {
   credentials = {
     email: '',
     password: ''
   };
-  
+
   isLoading = false;
   loginError = '';
 
@@ -30,20 +30,25 @@ export class LoginComponent {
     this.loginError = '';
 
     try {
-      // For demo purposes, allow demo credentials
-      if (this.credentials.email === 'adminpowertech.com' && this.credentials.password === 'admin123') {
-        // Simulate successful login for demo
+      const { data, error } = await this.supabaseService.signIn(this.credentials.email, this.credentials.password);
+
+      if (error) {
+        this.loginError = error.message || 'An unknown error occurred during login.';
+        console.error('Login error:', error);
+      } else if (data?.user) {
+        // Upon successful login, you would typically fetch the user's profile
+        // from your 'profiles' table to check their role (e.g., 'admin').
+        // For this example, we'll navigate to '/admin' directly after successful auth.
+        // In a real application, you'd add logic here to verify the user's role.
         this.router.navigate(['/admin']);
-        return;
+      } else {
+        this.loginError = 'Invalid credentials. Please check your email and password.';
       }
-
-      // Mock authentication - for demo purposes only
-      this.loginError = 'Invalid credentials. Please use the demo credentials provided.';
     } catch (error) {
-      this.loginError = 'An error occurred during login. Please try again.';
+      this.loginError = 'An unexpected error occurred during login. Please try again.';
       console.error('Login error:', error);
+    } finally {
+      this.isLoading = false;
     }
-
-    this.isLoading = false;
   }
 }

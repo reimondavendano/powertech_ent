@@ -40,10 +40,10 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "development": {
-              "buildTarget": "demo:build:development"
+              "buildTarget": "powertech_ent:build:development"
             },
             "production": {
-              "buildTarget": "demo:build:production"
+              "buildTarget": "powertech_ent:build:production"
             }
           },
           "defaultConfiguration": "development"
