@@ -73,6 +73,12 @@ body {
   padding: 0 1rem;
 }
 
+.text-stroke-black {
+  -webkit-text-stroke: 1px black; /* For Webkit browsers (Chrome, Safari, Edge) */
+  text-shadow: 1px black;       /* Standard property */
+  color: white;                 /* The main text color */
+}
+
 .btn {
   display: inline-flex;
   align-items: center;

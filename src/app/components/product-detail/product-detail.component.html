@@ -1,66 +1,68 @@
 <app-header></app-header>
 
-<div class="product-detail-container">
-  <nav class="breadcrumbs">
-    <a routerLink="/">Home</a>
-    <span>></span>
-    <a routerLink="/products">Products</a>
-    <span *ngIf="product">></span>
-    <span *ngIf="product">{{ product.name }}</span>
-  </nav>
+<div class="min-h-screen bg-gradient-to-r from-black to-red-900 flex items-center justify-center">
+  <div class="product-detail-container ">
+    <nav class="breadcrumbs">
+      <a routerLink="/">Home</a>
+      <span>></span>
+      <a routerLink="/products">Products</a>
+      <span *ngIf="product">></span>
+      <span *ngIf="product">{{ product.name }}</span>
+    </nav>
 
-  <div *ngIf="isLoading" class="loading-message">Loading product details...</div>
-  <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
+    <div *ngIf="isLoading" class="loading-message">Loading product details...</div>
+    <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
 
-  <div *ngIf="product" class="product-content">
-    <div class="product-image-section">
-      <div class="main-image-wrapper">
-        <img [src]="product.image_url || 'https://via.placeholder.com/600x600?text=No+Image'" [alt]="product.name" class="main-product-image">
-        
-        <div class="save-badge" *ngIf="saveAmount !== null">
-          SAVE ₱{{ saveAmount | number:'1.2-2' }}
-        </div>
-      </div>
-
-      <div class="thumbnail-gallery">
-        <img *ngIf="product.image_url" [src]="product.image_url" alt="Thumbnail" class="thumbnail-image active">
-        </div>
-    </div>
-
-    <div class="product-info-section">
-      <h1 class="product-name">{{ product.name }}</h1>
-
-      <div class="availability">
-        Available: <span class="in-stock">{{ product.stock > 0 ? 'In Stock' : 'Out of Stock' }}</span>
-      </div>
-
-      <div class="price-section">
-        <span class="current-price">₱{{ product.price | number:'1.2-2' }}</span>
-        <span class="original-price" *ngIf="product.originalPrice && product.originalPrice > product.price">
-          ₱{{ product.originalPrice | number:'1.2-2' }}
-        </span>
-      </div>
-
-
-      <div class="additional-actions">
-        <button (click)="addToWishlist()"><i class="fas fa-heart"></i> Add to Wishlist</button>
-        <button (click)="compareProduct()"><i class="fas fa-balance-scale"></i> Compare</button>
-      </div>
-
-      <div class="product-description-tabs">
-        <div class="tab-header active">Overview</div>
-        <div class="tab-content">
-          <p>{{ product.description }}</p>
+    <div *ngIf="product" class="product-content">
+      <div class="product-image-section">
+        <div class="main-image-wrapper">
+          <img [src]="product.image_url || 'https://via.placeholder.com/600x600?text=No+Image'" [alt]="product.name" class="main-product-image">
           
-          <h3 class="specs-heading">Product Specifications</h3>
-          <ul class="specs-list">
-            <li *ngIf="product.brand"><strong>Brand:</strong> {{ product.brand }}</li>
-            <li *ngIf="product.capacity"><strong>Capacity:</strong> {{ product.capacity }}</li>
-            <li *ngIf="product.description"><strong>Description:</strong> {{ product.description }}</li>
+          <div class="save-badge" *ngIf="saveAmount !== null">
+            SAVE ₱{{ saveAmount | number:'1.2-2' }}
+          </div>
+        </div>
 
-          </ul>
+        <div class="thumbnail-gallery">
+          <img *ngIf="product.image_url" [src]="product.image_url" alt="Thumbnail" class="thumbnail-image active">
+          </div>
+      </div>
+
+      <div class="product-info-section">
+        <h1 class="product-name">{{ product.name }}</h1>
+
+        <div class="availability">
+          Available: <span class="in-stock">{{ product.stock > 0 ? 'In Stock' : 'Out of Stock' }}</span>
         </div>
+
+        <div class="price-section">
+          <span class="current-price">₱{{ product.price | number:'1.2-2' }}</span>
+          <span class="original-price" *ngIf="product.originalPrice && product.originalPrice > product.price">
+            ₱{{ product.originalPrice | number:'1.2-2' }}
+          </span>
         </div>
+
+
+        <div class="additional-actions">
+          <button (click)="addToWishlist()"><i class="fas fa-heart"></i> Add to Wishlist</button>
+          <button (click)="compareProduct()"><i class="fas fa-balance-scale"></i> Compare</button>
+        </div>
+
+        <div class="product-description-tabs">
+          <div class="tab-header active">Overview</div>
+          <div class="tab-content">
+            <p>{{ product.description }}</p>
+            
+            <h3 class="specs-heading">Product Specifications</h3>
+            <ul class="specs-list">
+              <li *ngIf="product.brand"><strong>Brand:</strong> {{ product.brand }}</li>
+              <li *ngIf="product.capacity"><strong>Capacity:</strong> {{ product.capacity }}</li>
+              <li *ngIf="product.description"><strong>Description:</strong> {{ product.description }}</li>
+
+            </ul>
+          </div>
+          </div>
+      </div>
     </div>
   </div>
 </div>
