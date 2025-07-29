@@ -21,14 +21,14 @@
         
         <div *ngIf="currentUser; else loginButton">
           <div class="flex items-center space-x-4">
-            <a routerLink="/admin" routerLinkActive="text-red-600" 
-               class="text-gray-700 hover:text-red-600 font-medium transition-colors">Admin</a>
+            <!-- <a routerLink="/admin" routerLinkActive="text-red-600" 
+               class="text-gray-700 hover:text-red-600 font-medium transition-colors">Admin</a> -->
             <button (click)="logout()" class="btn btn-outline">Logout</button>
           </div>
         </div>
         
         <ng-template #loginButton>
-          <a routerLink="/login" class="btn btn-primary">Admin Login</a>
+          <!-- <a routerLink="/login" class="btn btn-primary">Admin Login</a> -->
         </ng-template>
       </nav>
 
