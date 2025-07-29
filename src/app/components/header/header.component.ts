@@ -12,6 +12,8 @@ import { CommonModule } from '@angular/common'; // Import CommonModule
   templateUrl: './header.component.html', // Point to external HTML file
   styleUrls: ['./header.component.css'] // Point to external CSS file
 })
+
+
 export class HeaderComponent implements OnInit {
   currentUser: User | null = null;
   mobileMenuOpen = false;
