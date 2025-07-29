@@ -1,3 +1,5 @@
 .angular
 node_modules
 .env
+/environments/environments.development.ts
+/environments/environment.ts
