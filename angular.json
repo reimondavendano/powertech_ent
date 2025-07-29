@@ -29,7 +29,7 @@
             "assets": ["src/favicon.ico","src/assets"],
             "index": "src/index.html",
             "browser": "src/main.ts",
-            "outputPath": "docs",
+            "outputPath": "dist/powertech_ent",
             "polyfills": ["zone.js"],
             "scripts": [],
             "styles": ["src/global_styles.css"],
