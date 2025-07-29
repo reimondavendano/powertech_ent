@@ -1,16 +1,16 @@
 <app-header></app-header>
-<div class="min-h-screen bg-gray-50 flex items-center justify-center py-8">
-  <div class="container mx-auto px-4">
+<div class="min-h-screen bg-gradient-to-r from-black to-red-900 flex items-center justify-center py-8">
+  <div class="container-fluid mx-auto px-4 horizontal-margin-5px">
     <div class="max-w-2xl mx-auto">
       <div class="text-center mb-8">
-        <h1 class="text-4xl font-bold text-black mb-4">Chat with PowerTech</h1>
-        <p class="text-xl text-gray-600">Ask us anything about our products and services</p>
+        <h1 class="text-4xl font-bold text-white mb-4">Chat with PowerTech</h1>
+        <p class="text-xl text-white">Ask us anything about our products and services</p>
       </div>
 
       <div *ngIf="selectedProduct" class="bg-white rounded-lg shadow-md p-6 mb-8">
-        <h3 class="text-lg font-semibold text-black mb-3">Inquiring about:</h3>
+        <h3 class="text-lg font-semibold text-white mb-3">Inquiring about:</h3>
         <div class="flex items-center space-x-4">
-          <div class="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center">
+          <div class="w-16 h-16 bg-white rounded-lg flex items-center justify-center">
             <img *ngIf="selectedProduct.image_url" [src]="selectedProduct.image_url" [alt]="selectedProduct.name"
                  class="w-full h-full object-cover rounded-lg">
             <svg *ngIf="!selectedProduct.image_url" class="w-8 h-8 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
@@ -18,9 +18,9 @@
             </svg>
           </div>
           <div>
-            <h4 class="font-semibold text-black">{{ selectedProduct.name }}</h4>
+            <h4 class="font-semibold text-white">{{ selectedProduct.name }}</h4>
             <p class="text-red-600 font-bold">₱{{ selectedProduct.price | number:'1.2-2' }}</p>
-            <p class="text-sm text-gray-500">{{ selectedProduct.category }}</p>
+            <p class="text-sm text-white">{{ selectedProduct.category }}</p>
           </div>
         </div>
       </div>

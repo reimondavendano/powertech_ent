@@ -1,3 +1,5 @@
+/* src/app/products/products.component.css */
+
 .line-clamp-2 {
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -11,3 +13,113 @@
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
+
+/* Custom scrollbar for brand filter */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+
+/* Form Inputs */
+.form-input {
+  display: block;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: #495057;
+  background-color: #fff;
+  background-clip: padding-box;
+  border: 1px solid #ced4da;
+  border-radius: 0.25rem;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  appearance: none; /* Remove default select arrow on some browsers */
+}
+
+.form-input:focus {
+  border-color: #80bdff;
+  outline: 0;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.form-label {
+  display: inline-block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: #343a40;
+}
+
+.form-checkbox, .form-radio {
+  display: inline-block;
+  vertical-align: middle;
+  flex-shrink: 0; /* Prevents checkbox/radio from shrinking in flex container */
+}
+
+/* Button styles */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.375rem; /* rounded-md */
+  font-weight: 600; /* font-semibold */
+  cursor: pointer;
+  transition: all 0.15s ease-in-out;
+  text-align: center;
+  text-decoration: none;
+}
+
+.btn-primary {
+  background-color: #dc2626; /* red-600 */
+  color: #fff;
+  border: 1px solid #dc2626;
+}
+
+.btn-primary:hover {
+  background-color: #b91c1c; /* red-700 */
+}
+
+.btn-outline {
+  background-color: transparent;
+  color: #4b5563; /* gray-700 */
+  border: 1px solid #d1d5db; /* gray-300 */
+}
+
+.btn-outline:hover {
+  background-color: #f3f4f6; /* gray-100 */
+  border-color: #9ca3af; /* gray-400 */
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Styles for the product card itself */
+.card {
+  background-color: #fff;
+  border-radius: 0.5rem; /* rounded-lg */
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06); /* shadow-md */
+  display: flex;
+  flex-direction: column;
+  height: 100%; /* Ensure cards in grid have equal height if content varies */
+}
+
+.card:hover {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* hover:shadow-xl */
+}
+

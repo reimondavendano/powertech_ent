@@ -65,3 +65,20 @@
     flex: 0 0 100%;
   }
 }
+
+/* Fix for "SAVE" badge visibility to ensure it's not hidden by other styles */
+.card .absolute {
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+.bg-yellow-400.text-black.text-xs.px-2.py-1.rounded {
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* New rule for fixed horizontal margins */
+.horizontal-margin-5px {
+  margin-left: 5rem;
+  margin-right: 5rem;
+}

@@ -28,7 +28,7 @@ export const APP_ENVIRONMENT = new InjectionToken<typeof environment>('app.envir
         <router-outlet></router-outlet>
       </main>
 
-      <footer class="bg-black text-white py-12 mt-16">
+      <footer class="bg-black text-white py-12">
         <div class="container mx-auto px-4">
           <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div>

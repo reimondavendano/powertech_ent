@@ -4,6 +4,7 @@ import { ProductsComponent } from './components/products/products.component.js';
 import { InquiryComponent } from './components/inquiry/inquiry.component.js';
 import { LoginComponent } from './components/login/login.component.js';
 import { AdminComponent } from './components/admin/admin.component.js';
+import { ProductDetailComponent } from './components/product-detail/product-detail.component.js';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -11,5 +12,6 @@ export const routes: Routes = [
   { path: 'inquiry', component: InquiryComponent },
   { path: 'login', component: LoginComponent },
   { path: 'admin', component: AdminComponent },
+  { path: 'product/:id', component: ProductDetailComponent }, // New route for product details
   { path: '**', redirectTo: '' }
 ];

@@ -18,6 +18,17 @@ h1 {
   box-sizing: border-box;
 }
 
+.horizontal-margin-5px {
+  margin-left: 5rem;
+  margin-right: 5rem;
+}
+
+.horizontal-margin-10rem {
+  margin-left: 10rem;
+  margin-right: 10rem;
+}
+
+
 :root {
   --primary-red: #DC2626;
   --primary-black: #000000;

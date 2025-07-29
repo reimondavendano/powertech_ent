@@ -57,6 +57,10 @@ export interface Product {
   description: string;
   image_url: string;
   created_at: string;
+  sales_count?: number;
+  originalPrice?: number; // Added originalPrice as an optional property
+  brand?: string; // Added for product detail view
+  capacity?: string; // Added for product detail view
 }
 
 export interface Inquiry {
@@ -115,14 +119,22 @@ export class SupabaseService {
     return { error: null };
   }
 
-  // Product methods
-  async getProducts(): Promise<{ data: Product[] | null, error: any }> {
-    const { data, error } = await this.client.from('products').select('*');
-    if (error) {
-      console.error('Supabase getProducts error:', error.message);
-      return { data: null, error };
-    }
-    return { data, error: null };
+   async getProducts(): Promise<{ data: Product[] | null; error: any }> {
+    const { data, error } = await this.supabase
+      .from('products')
+      .select('*')
+      .order('created_at', { ascending: false }); // Example ordering
+    return { data, error };
+  }
+
+  // New method to get a single product by ID
+  async getProductById(id: number): Promise<{ data: Product | null; error: any }> {
+    const { data, error } = await this.supabase
+      .from('products')
+      .select('*')
+      .eq('id', id)
+      .single(); // Use .single() to get a single object instead of an array
+    return { data, error };
   }
 
   async getProduct(id: number): Promise<{ data: Product | null, error: any }> {
@@ -189,5 +201,5 @@ export class SupabaseService {
       return { data: null, error };
     }
     return { data, error: null };
-    }
+  }
 }
