@@ -88,14 +88,18 @@ export class ProductDetailComponent implements OnInit {
         // --- IMPORTANT: Set Open Graph Meta Tags for Facebook Sharing ---
         const pageTitle = `${this.product.name} - PowerTech`;
         const pageDescription = this.product.description || 'Check out this amazing product from PowerTech!';
-        const imageUrl = this.product.image_url || 'https://placehold.co/1200x630?text=PowerTech+Product'; // Use a default image if product has none
         const productUrl = window.location.href; // Get the current page URL
+
+        // Generate the OG image URL using a hypothetical Vercel OG Image Generation endpoint
+        // You would need to implement the /api/og-image endpoint in your Vercel project
+        const ogImageUrl = this.generateOgImageUrl(this.product.name, this.product.price, this.product.image_url);
+
 
         this.titleService.setTitle(pageTitle); // Set the browser tab title
 
         this.meta.updateTag({ property: 'og:title', content: pageTitle });
         this.meta.updateTag({ property: 'og:description', content: pageDescription });
-        this.meta.updateTag({ property: 'og:image', content: imageUrl });
+        this.meta.updateTag({ property: 'og:image', content: ogImageUrl }); // Point to the generated image
         this.meta.updateTag({ property: 'og:url', content: productUrl });
         this.meta.updateTag({ property: 'og:type', content: 'product' }); // Or 'website' if more general
         this.meta.updateTag({ property: 'og:image:width', content: '1200' }); // Recommended dimensions
@@ -111,6 +115,22 @@ export class ProductDetailComponent implements OnInit {
     }
     this.isLoading = false;
   }
+
+  // Helper function to generate the Vercel OG image URL
+  // NOTE: This URL points to a *hypothetical* serverless function.
+  // You need to create this function in your Vercel project (e.g., in /api/og-image.ts or .js)
+  // that uses @vercel/og or similar to render an image based on these parameters.
+  private generateOgImageUrl(productName: string, productPrice: number, productImageUrl?: string): string {
+    const baseUrl = window.location.origin; // e.g., https://powertech-ent.vercel.app
+    const encodedTitle = encodeURIComponent(productName);
+    const encodedPrice = encodeURIComponent(`₱${productPrice.toFixed(2)}`);
+    const encodedImageUrl = productImageUrl ? encodeURIComponent(productImageUrl) : '';
+
+    // This is the URL structure for your Vercel OG image generation serverless function
+    // You would customize the query parameters based on what your serverless function expects.
+    return `${baseUrl}/api/og-image?title=${encodedTitle}&price=${encodedPrice}&image=${encodedImageUrl}`;
+  }
+
 
   get saveAmount(): number | null {
     if (this.product?.originalPrice && this.product.originalPrice > this.product.price) {
