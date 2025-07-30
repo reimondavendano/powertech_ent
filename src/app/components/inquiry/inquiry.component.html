@@ -20,7 +20,8 @@
           <div>
             <h4 class="font-semibold text-white">{{ selectedProduct.name }}</h4>
             <p class="text-red-600 font-bold">₱{{ selectedProduct.price | number:'1.2-2' }}</p>
-            <p class="text-sm text-white">{{ selectedProduct.category }}</p>
+            <!-- Updated to use getCategoryName function -->
+            <p class="text-sm text-white">{{ getCategoryName(selectedProduct.category_id) }}</p>
           </div>
         </div>
       </div>

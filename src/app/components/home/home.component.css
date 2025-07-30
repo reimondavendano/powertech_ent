@@ -4,38 +4,98 @@
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
+/* Removed circuit-pattern background-image from here */
 .circuit-pattern {
-  background-image: url('../../../assets/images/2.png'); /* Path to your background image */
-  background-size: cover; /* This makes sure your image covers the entire section */
-  background-position: center; /* Centers the background image */
-  background-repeat: no-repeat; /* Prevents the image from repeating */
-  min-height: 55vh; /* Changed from height to min-height */
+  /* background-image: url('../../../assets/images/2.png'); */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  min-height: 55vh;
 }
 
-/* Slider specific styles */
+/* Hero Carousel specific styles */
+.hero-carousel-section {
+  position: relative;
+  overflow: hidden;
+  /* Ensure the section has a defined height, or min-height, to contain the carousel */
+  min-height: 600px; /* Example height */
+}
+
+.hero-carousel-container {
+  position: absolute; /* Position to cover the whole section */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.hero-carousel-track {
+  display: flex; /* Added display flex here for the track */
+  transition: transform 0.8s ease-in-out;
+  height: 100%; /* Ensure track takes full height */
+}
+
+.hero-carousel-item {
+  flex-shrink: 0;
+  width: 100%;
+  height: 100%; /* Ensure item takes full height */
+  position: relative; /* For positioning image and overlay */
+  display: flex; /* To center content vertically */
+  align-items: center; /* Center content vertically */
+  justify-content: center; /* Center content horizontally */
+}
+
+.hero-carousel-item img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Cover the entire area */
+  z-index: 0; /* Ensure image is behind text */
+}
+
+/* Product Slider specific styles */
 .slider-container {
-  overflow: hidden; /* Hides parts of the track that are off-screen */
+  overflow: hidden;
   width: 100%;
 }
 
 .slider-track {
   display: flex;
-  transition: transform 0.5s ease-in-out; /* Smooth transition for sliding */
+  transition: transform 0.5s ease-in-out;
 }
 
 .slider-item {
-  flex: 0 0 calc(100% / 4); /* Display 2 items per slide on larger screens */
-  padding: 0 1rem; /* Adjust padding between items */
-  box-sizing: border-box; /* Include padding in the width calculation */
+  flex: 0 0 calc(100% / 4);
+  padding: 0 1rem;
+  box-sizing: border-box;
+}
+
+/* Category Slider specific styles */
+.category-slider-container {
+  overflow: hidden;
+  width: 100%;
+}
+
+.category-slider-track {
+  display: flex;
+  transition: transform 0.5s ease-in-out;
+}
+
+.category-slider-item {
+  flex: 0 0 calc(100% / 6);
+  padding: 0 0.5rem;
+  box-sizing: border-box;
 }
 
 .text-stroke-black {
-  -webkit-text-stroke: 1px black; /* For Webkit browsers (Chrome, Safari, Edge) */
-  text-shadow: 1px black;       /* Standard property */
-  color: white;                 /* The main text color */
+  -webkit-text-stroke: 1px black;
+  text-shadow: 1px black;
+  color: white;
 }
 
-/* You can create variations for different thicknesses */
 .text-stroke-black-2px {
   -webkit-text-stroke: 2px black;
   text-shadow: 2px black;
@@ -47,22 +107,41 @@
 }
 
 
-/* Responsive adjustments for slider items */
-@media (max-width: 1024px) { /* For large devices (e.g., desktops), show 4 items */
+/* Responsive adjustments for product slider items */
+@media (max-width: 1024px) {
   .slider-item {
     flex: 0 0 calc(100% / 4);
   }
 }
 
-@media (max-width: 768px) { /* For medium devices (e.g., tablets), show 2 items */
+@media (max-width: 768px) {
   .slider-item {
     flex: 0 0 calc(100% / 2);
   }
 }
 
-@media (max-width: 640px) { /* For small devices (e.g., mobile), show 1 item */
+@media (max-width: 640px) {
   .slider-item {
     flex: 0 0 100%;
+  }
+}
+
+/* Responsive adjustments for category slider items */
+@media (max-width: 1024px) {
+  .category-slider-item {
+    flex: 0 0 calc(100% / 4);
+  }
+}
+
+@media (max-width: 768px) {
+  .category-slider-item {
+    flex: 0 0 calc(100% / 3);
+  }
+}
+
+@media (max-width: 640px) {
+  .category-slider-item {
+    flex: 0 0 calc(100% / 2);
   }
 }
 

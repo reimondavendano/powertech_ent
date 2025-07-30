@@ -14,10 +14,10 @@ export interface Database {
         Insert: Omit<Product, 'id' | 'created_at'>; // The type of data you can insert
         Update: Partial<Omit<Product, 'id' | 'created_at'>>; // The type of data you can update
       };
-      inquiries: {
-        Row: Inquiry;
-        Insert: Omit<Inquiry, 'id' | 'created_at' | 'status'>;
-        Update: Partial<Omit<Inquiry, 'id' | 'created_at' | 'status'>>;
+      categories: {
+        Row: Category;
+        Insert: Omit<Category, 'id' | 'created_at'>;
+        Update: Partial<Omit<Category, 'id' | 'created_at'>>;
       };
       profiles: {
         Row: {
@@ -48,30 +48,28 @@ export interface Database {
   };
 }
 
-export interface Product {
-  id: number; // Changed to number to match SQL migration
+export interface Category {
+  id: number;
   name: string;
-  category: string;
+  description: string;
+  image_url: string;
+  created_at: string;
+}
+
+export interface Product {
+  id: number;
+  name: string;
+  category_id: number; // Changed from 'category: string' to 'category_id: number'
   price: number;
   stock: number;
   description: string;
   image_url: string;
+  specs: Record<string, any>; // Added specs column for flexible JSON data
   created_at: string;
   sales_count?: number;
   originalPrice?: number; // Added originalPrice as an optional property
   brand?: string; // Added for product detail view
   capacity?: string; // Added for product detail view
-}
-
-export interface Inquiry {
-  id: number; // Changed to number to match SQL migration
-  name: string;
-  email: string;
-  phone: string;
-  product_id: number; // Changed to number to match SQL migration
-  message: string;
-  status: 'pending' | 'responded' | 'closed';
-  created_at: string;
 }
 
 @Injectable({
@@ -119,7 +117,8 @@ export class SupabaseService {
     return { error: null };
   }
 
-   async getProducts(): Promise<{ data: Product[] | null; error: any }> {
+  // Product methods
+  async getProducts(): Promise<{ data: Product[] | null; error: any }> {
     const { data, error } = await this.supabase
       .from('products')
       .select('*')
@@ -173,33 +172,48 @@ export class SupabaseService {
     return { error: null };
   }
 
-  // Inquiry methods
-  async getInquiries(): Promise<{ data: Inquiry[] | null, error: any }> {
-    const { data, error } = await this.client.from('inquiries').select('*');
+  // Category methods
+  async getCategories(): Promise<{ data: Category[] | null; error: any }> {
+    const { data, error } = await this.supabase
+      .from('categories')
+      .select('*')
+      .order('name', { ascending: true });
+    return { data, error };
+  }
+
+  async getCategoryById(id: number): Promise<{ data: Category | null; error: any }> {
+    const { data, error } = await this.supabase
+      .from('categories')
+      .select('*')
+      .eq('id', id)
+      .single();
+    return { data, error };
+  }
+
+  async createCategory(category: Omit<Category, 'id' | 'created_at'>): Promise<{ data: Category | null; error: any }> {
+    const { data, error } = await this.client.from('categories').insert([category]).select().single();
     if (error) {
-      console.error('Supabase getInquiries error:', error.message);
+      console.error('Supabase createCategory error:', error.message);
       return { data: null, error };
     }
     return { data, error: null };
   }
 
-  async createInquiry(inquiry: Omit<Inquiry, 'id' | 'created_at' | 'status'>): Promise<{ data: Inquiry | null, error: any }> {
-    // Ensure product_id is passed as a number when calling this method.
-    // Example: { ..., product_id: 1, ... } NOT { ..., product_id: '1', ... }
-    const { data, error } = await this.client.from('inquiries').insert([inquiry]).select().single();
+  async updateCategory(id: number, updates: Partial<Category>): Promise<{ data: Category | null; error: any }> {
+    const { data, error } = await this.client.from('categories').update(updates).eq('id', id).select().single();
     if (error) {
-      console.error('Supabase createInquiry error:', error.message);
+      console.error('Supabase updateCategory error:', error.message);
       return { data: null, error };
     }
     return { data, error: null };
   }
 
-  async updateInquiryStatus(id: number, status: Inquiry['status']): Promise<{ data: Inquiry | null, error: any }> {
-    const { data, error } = await this.client.from('inquiries').update({ status }).eq('id', id).select().single();
+  async deleteCategory(id: number): Promise<{ error: any }> {
+    const { error } = await this.client.from('categories').delete().eq('id', id);
     if (error) {
-      console.error('Supabase updateInquiryStatus error:', error.message);
-      return { data: null, error };
+      console.error('Supabase deleteCategory error:', error.message);
+      return { error };
     }
-    return { data, error: null };
+    return { error: null };
   }
 }

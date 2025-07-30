@@ -1,29 +1,37 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { SupabaseService, Product, Inquiry } from '../../services/supabase.service';
+import { SupabaseService, Product, Category } from '../../services/supabase.service'; // Import Category
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-admin',
-  standalone: true, // Keep this as standalone
-  imports: [CommonModule, FormsModule], // Import CommonModule and FormsModule here
+  standalone: true,
+  imports: [CommonModule, FormsModule],
   templateUrl: './admin.component.html',
   styleUrls: ['./admin.component.css']
 })
 export class AdminComponent implements OnInit {
-  activeTab: 'products' | 'inquiries' | 'add-product' = 'products';
+  activeTab: 'products' | 'categories' | 'add-product' | 'add-category' = 'products'; // Updated tabs
   products: Product[] = [];
-  inquiries: Inquiry[] = [];
+  categories: Category[] = []; // New property for categories
   editingProduct: Product | null = null;
+  editingCategory: Category | null = null; // New property for editing categories
   saving = false;
 
-  currentProduct: Omit<Product, 'id' | 'created_at'> = { // Removed 'updated_at' as it's not in your Product interface
+  currentProduct: Omit<Product, 'id' | 'created_at'> = {
     name: '',
     description: '',
     price: 0,
-    category: '',
+    category_id: 0, // Changed from 'category' to 'category_id'
     stock: 0,
+    image_url: '',
+    specs: {} // Initialize specs as an empty object
+  };
+
+  currentCategory: Omit<Category, 'id' | 'created_at'> = { // New property for adding/editing categories
+    name: '',
+    description: '',
     image_url: ''
   };
 
@@ -34,34 +42,30 @@ export class AdminComponent implements OnInit {
 
   ngOnInit() {
     this.loadProducts();
-    this.loadInquiries();
+    this.loadCategories(); // Load categories on init
   }
 
   async loadProducts() {
     const { data, error } = await this.supabaseService.getProducts();
     if (data && !error) {
-      // Ensure product IDs are numbers
-      this.products = data.map(product => ({
-        ...product,
-        id: typeof product.id === 'string' ? parseInt(product.id, 10) : product.id
-      }));
+      this.products = data;
     } else {
       console.error('Error loading products:', error);
     }
   }
 
-  async loadInquiries() {
-    const { data, error } = await this.supabaseService.getInquiries();
+  async loadCategories() {
+    const { data, error } = await this.supabaseService.getCategories();
     if (data && !error) {
-      // Ensure inquiry IDs and product_ids are numbers
-      this.inquiries = data.map(inquiry => ({
-        ...inquiry,
-        id: typeof inquiry.id === 'string' ? parseInt(inquiry.id, 10) : inquiry.id,
-        product_id: typeof inquiry.product_id === 'string' ? parseInt(inquiry.product_id, 10) : inquiry.product_id
-      }));
+      this.categories = data;
     } else {
-      console.error('Error loading inquiries:', error);
+      console.error('Error loading categories:', error);
     }
+  }
+
+  getCategoryName(categoryId: number): string {
+    const category = this.categories.find(c => c.id === categoryId);
+    return category ? category.name : 'Unknown Category';
   }
 
   editProduct(product: Product) {
@@ -70,14 +74,15 @@ export class AdminComponent implements OnInit {
       name: product.name,
       description: product.description,
       price: product.price,
-      category: product.category,
+      category_id: product.category_id,
       stock: product.stock,
-      image_url: product.image_url || ''
+      image_url: product.image_url || '',
+      specs: product.specs || {}
     };
     this.activeTab = 'add-product';
   }
 
-  async deleteProduct(id: number) { // Changed type to number
+  async deleteProduct(id: number) {
     // IMPORTANT: Replaced confirm() with a custom message box as per instructions.
     // You would implement a modal or similar UI for confirmation.
     const confirmed = window.confirm('Are you sure you want to delete this product?'); // For demo purposes, using window.confirm
@@ -96,15 +101,13 @@ export class AdminComponent implements OnInit {
 
     try {
       if (this.editingProduct) {
-        // Ensure editingProduct.id is a number before passing
-        const productId = typeof this.editingProduct.id === 'string' ? parseInt(this.editingProduct.id, 10) : this.editingProduct.id;
         const { data, error } = await this.supabaseService.updateProduct(
-          productId, // Pass as number
+          this.editingProduct.id,
           this.currentProduct
         );
         if (!error) {
           this.loadProducts();
-          this.cancelEdit();
+          this.cancelEditProduct();
         } else {
           console.error('Error updating product:', error);
         }
@@ -112,7 +115,7 @@ export class AdminComponent implements OnInit {
         const { data, error } = await this.supabaseService.createProduct(this.currentProduct);
         if (!error) {
           this.loadProducts();
-          this.resetForm();
+          this.resetProductForm();
         } else {
           console.error('Error creating product:', error);
         }
@@ -124,39 +127,89 @@ export class AdminComponent implements OnInit {
     this.saving = false;
   }
 
-  cancelEdit() {
+  cancelEditProduct() {
     this.editingProduct = null;
-    this.resetForm();
+    this.resetProductForm();
     this.activeTab = 'products';
   }
 
-  resetForm() {
+  resetProductForm() {
     this.currentProduct = {
       name: '',
       description: '',
       price: 0,
-      category: '',
+      category_id: 0,
       stock: 0,
-      image_url: ''
+      image_url: '',
+      specs: {}
     };
   }
 
-  async updateInquiryStatus(id: number, status: Inquiry['status']) { // Changed id type to number
-    const { error } = await this.supabaseService.updateInquiryStatus(id, status);
-    if (!error) {
-      this.loadInquiries();
-    } else {
-      console.error('Error updating inquiry status:', error);
+  // Category Management Methods
+  editCategory(category: Category) {
+    this.editingCategory = category;
+    this.currentCategory = {
+      name: category.name,
+      description: category.description,
+      image_url: category.image_url || ''
+    };
+    this.activeTab = 'add-category';
+  }
+
+  async deleteCategory(id: number) {
+    const confirmed = window.confirm('Are you sure you want to delete this category? This will affect associated products!');
+    if (confirmed) {
+      const { error } = await this.supabaseService.deleteCategory(id);
+      if (!error) {
+        this.loadCategories();
+        this.loadProducts(); // Reload products as category_id might change to NULL
+      } else {
+        console.error('Error deleting category:', error);
+      }
     }
   }
 
-  getStatusClass(status: Inquiry['status']): string {
-    switch (status) {
-      case 'pending': return 'bg-yellow-100 text-yellow-800';
-      case 'responded': return 'bg-blue-100 text-blue-800';
-      case 'closed': return 'bg-green-100 text-green-800';
-      default: return 'bg-gray-100 text-gray-800';
+  async saveCategory() {
+    this.saving = true;
+    try {
+      if (this.editingCategory) {
+        const { data, error } = await this.supabaseService.updateCategory(
+          this.editingCategory.id,
+          this.currentCategory
+        );
+        if (!error) {
+          this.loadCategories();
+          this.cancelEditCategory();
+        } else {
+          console.error('Error updating category:', error);
+        }
+      } else {
+        const { data, error } = await this.supabaseService.createCategory(this.currentCategory);
+        if (!error) {
+          this.loadCategories();
+          this.resetCategoryForm();
+        } else {
+          console.error('Error creating category:', error);
+        }
+      }
+    } catch (error) {
+      console.error('Error saving category:', error);
     }
+    this.saving = false;
+  }
+
+  cancelEditCategory() {
+    this.editingCategory = null;
+    this.resetCategoryForm();
+    this.activeTab = 'categories';
+  }
+
+  resetCategoryForm() {
+    this.currentCategory = {
+      name: '',
+      description: '',
+      image_url: ''
+    };
   }
 
   logout() {

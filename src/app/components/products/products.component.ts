@@ -3,27 +3,10 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router, RouterModule } from '@angular/router';
-import { SupabaseService, Product } from '../../services/supabase.service';
-import { HeaderComponent } from "../header/header.component.js";
+import { Router, ActivatedRoute, RouterModule } from '@angular/router'; // Import ActivatedRoute
+import { SupabaseService, Product, Category } from '../../services/supabase.service'; // Import Category
 
-// Ensure your Product interface in '../../services/supabase.service' includes these properties if you want to use them from Supabase.
-// Example in supabase.service.ts (not this file):
-/*
-export interface Product {
-  id: number;
-  name: string;
-  description: string;
-  price: number;
-  stock: number;
-  image_url: string;
-  // Add these if they are in your Supabase table and you want to fetch them
-  originalPrice?: number;
-  sales_count?: number;
-  brand?: string;
-  // rating?: number; // Removed as per request
-}
-*/
+import { HeaderComponent } from "../header/header.component";
 
 @Component({
   selector: 'app-products',
@@ -40,10 +23,10 @@ export class ProductsComponent implements OnInit {
   searchTerm: string = '';
   minPrice: number | null = null;
   maxPrice: number | null = null;
-  inStock: boolean = false; // For Availability: In Stock
+  inStock: boolean = false;
   selectedBrands: string[] = [];
-  availableBrands: string[] = []; // Populated from product data
-  selectedDiscount: number | null = null; // e.g., 0.10 for 10% off
+  availableBrands: string[] = [];
+  selectedDiscount: number | null = null;
   discountOptions: { label: string, value: number | null }[] = [
     { label: 'All Discounts', value: null },
     { label: '10% or more', value: 0.10 },
@@ -51,16 +34,47 @@ export class ProductsComponent implements OnInit {
     { label: '30% or more', value: 0.30 }
   ];
 
-  sortBy: string = 'name'; // Default sort option
+  sortBy: string = 'name';
   loading: boolean = true;
+
+  // Category filtering properties
+  categories: Category[] = []; // All available categories
+  categoryMap: Map<number, string> = new Map(); // Map for quick lookup
+  selectedCategory: number | null = null; // The ID of the currently selected category filter
 
   constructor(
     private supabaseService: SupabaseService,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute // Inject ActivatedRoute
   ) {}
 
-  ngOnInit() {
-    this.loadProducts();
+  async ngOnInit() {
+    await this.loadCategories(); // Load categories first
+    this.route.queryParams.subscribe(params => {
+      if (params['category']) {
+        const categoryId = parseInt(params['category'], 10);
+        if (!isNaN(categoryId)) {
+          this.selectedCategory = categoryId;
+        }
+      }
+      this.loadProducts(); // Load products and apply filters based on initial query params
+    });
+  }
+
+  async loadCategories() {
+    const { data, error } = await this.supabaseService.getCategories();
+    if (data && !error) {
+      this.categories = data;
+      this.categories.forEach(category => {
+        this.categoryMap.set(category.id, category.name);
+      });
+    } else {
+      console.error('Error loading categories:', error);
+    }
+  }
+
+  getCategoryName(categoryId: number): string {
+    return this.categoryMap.get(categoryId) || 'Unknown Category';
   }
 
   async loadProducts() {
@@ -68,11 +82,8 @@ export class ProductsComponent implements OnInit {
     const { data, error } = await this.supabaseService.getProducts();
 
     if (data && !error) {
-      // Assuming originalPrice, sales_count, and brand come directly from Supabase now.
-      // Removed the mocking logic for these properties.
       this.products = data;
-
-      this.extractBrands(); // Extract brands from loaded products
+      this.extractBrands();
       this.applyFiltersAndSort(); // Apply initial filters and sorting
     } else {
       console.error('Error loading products:', error);
@@ -86,9 +97,13 @@ export class ProductsComponent implements OnInit {
     this.availableBrands = Array.from(brandSet).sort();
   }
 
-  // Unified method to apply all filters and then sort
   applyFiltersAndSort() {
     let tempProducts = [...this.products];
+
+    // Category Filter (NEW)
+    if (this.selectedCategory !== null && this.selectedCategory !== 0) { // 0 can be used for 'All Categories'
+      tempProducts = tempProducts.filter(product => product.category_id === this.selectedCategory);
+    }
 
     // Search Term Filter
     if (this.searchTerm) {
@@ -121,7 +136,6 @@ export class ProductsComponent implements OnInit {
     // Discount Filter
     if (this.selectedDiscount !== null) {
       tempProducts = tempProducts.filter(product => {
-        // Ensure originalPrice exists and is greater than price for discount calculation
         if (product.originalPrice && product.originalPrice > product.price) {
           const discount = (product.originalPrice - product.price) / product.originalPrice;
           return discount >= this.selectedDiscount!;
@@ -130,10 +144,8 @@ export class ProductsComponent implements OnInit {
       });
     }
 
-    // Rating Filter removed as per request.
-
     this.filteredProducts = tempProducts;
-    this.sortProducts(); // Always re-sort after filtering
+    this.sortProducts();
   }
 
   sortProducts() {
@@ -156,8 +168,7 @@ export class ProductsComponent implements OnInit {
       case 'stock-desc':
         this.filteredProducts.sort((a, b) => b.stock - a.stock);
         break;
-      case 'bestselling': // Added for image reference
-        // Assuming sales_count now comes from Supabase. Handle potential undefined.
+      case 'bestselling':
         this.filteredProducts.sort((a, b) => (b.sales_count || 0) - (a.sales_count || 0));
         break;
     }
@@ -168,23 +179,18 @@ export class ProductsComponent implements OnInit {
   }
 
   inquireProduct(product: Product) {
-    // Navigate to inquiry page with product context
     this.router.navigate(['/inquiry'], { queryParams: { product: product.id, name: product.name } });
   }
 
   addToCart(product: Product) {
     console.log(`Added ${product.name} to cart!`);
-    // Implement your cart logic here (e.g., add to a cart service)
   }
 
-  // Helper getters for counts in the template
   get inStockCount(): number {
     return this.products.filter(p => (p.stock || 0) > 0).length;
   }
 
   getBrandCount(brand: string): number {
-    // Assuming brand property now comes from Supabase. Handle potential undefined.
     return this.products.filter(p => p.brand === brand).length;
   }
-
 }

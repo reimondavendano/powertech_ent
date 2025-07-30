@@ -1,21 +1,127 @@
 <app-header></app-header>
-<section class="bg-gradient-to-r from-black via-red-900 to-black text-white py-32 circuit-pattern flex items-center justify-center">
-  <div class="container mx-auto px-4 text-center">
-    <h1 class="text-6xl md:text-7xl font-bold mb-6 text-stroke-black mogra-font">
-      COMPUTER PARTS AND ACCESSORIES
-    </h1>
+<!-- Hero Carousel Section -->
+<section class="hero-carousel-section text-white py-32 flex items-center justify-center relative overflow-hidden">
+  <div class="hero-carousel-container w-full h-full absolute inset-0">
+    <div class="hero-carousel-track flex h-full"
+         [style.transform]="'translateX(-' + (currentHeroSlideIndex * 100) + '%)'"
+         (mouseenter)="stopHeroAutoSlide()"
+         (mouseleave)="startHeroAutoSlide()">
+      <div *ngFor="let banner of heroBanners; let i = index" class="hero-carousel-item flex-shrink-0 w-full h-full relative">
+        <!-- Background Image for the slide -->
+        <img [src]="banner.image_url" [alt]="banner.title" class="w-full h-full object-cover absolute inset-0">
+        <!-- Overlay for text readability -->
+        <div class="absolute inset-0 bg-black opacity-50"></div>
 
-    <h2 class="text-3xl md:text-4xl font-semibold mb-4 text-stroke-black mogra-font">
-      BRANDNEW LAPTOP & PRINTERS
-    </h2>
-    <p class="text-xl mb-8 text-gray-200 text-black mogra-font">WHOLESALE AND RETAIL</p>
-    <div class="flex flex-col sm:flex-row gap-4 justify-center">
-      <a routerLink="/products" class="btn btn-primary text-lg px-8 py-3 mogra-font">
-        View Products
-      </a>
-      <a routerLink="/inquiry" class="btn btn-outline text-lg px-8 py-3 border-white text-white hover:bg-white hover:text-black mogra-font">
-        Make Inquiry
-      </a>
+        <!-- Text Content Overlay -->
+        <div class="relative z-10 container mx-auto px-4 text-center flex flex-col justify-center items-center h-full">
+          <h1 class="text-6xl md:text-7xl font-bold mb-6 text-stroke-black mogra-font">
+            {{ banner.title }}
+          </h1>
+          <h2 class="text-3xl md:text-4xl font-semibold mb-4 text-stroke-black mogra-font">
+            {{ banner.subtitle }}
+          </h2>
+          <p class="text-xl mb-8 text-gray-200 text-black mogra-font">{{ banner.description }}</p>
+          <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <a [routerLink]="banner.viewProductsLink" class="btn btn-primary text-lg px-8 py-3 mogra-font">
+              View Products
+            </a>
+            <a [routerLink]="banner.makeInquiryLink" class="btn btn-outline text-lg px-8 py-3 border-white text-white hover:bg-white hover:text-black mogra-font">
+              Make Inquiry
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Navigation Buttons for Hero Carousel -->
+  <button
+    (click)="prevHeroSlide()"
+    class="absolute top-1/2 left-0 transform -translate-y-1/2 bg-red-600 bg-opacity-50 text-white p-3 rounded-full shadow-lg hover:bg-opacity-75 transition-all duration-300 z-20 ml-2"
+    [disabled]="totalHeroSlides <= 1"
+  >
+    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+  </button>
+  <button
+    (click)="nextHeroSlide()"
+    class="absolute top-1/2 right-0 transform -translate-y-1/2 bg-red-600 bg-opacity-50 text-white p-3 rounded-full shadow-lg hover:bg-opacity-75 transition-all duration-300 z-20 mr-2"
+    [disabled]="totalHeroSlides <= 1"
+  >
+    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+  </button>
+
+  <!-- Pagination Dots for Hero Carousel -->
+  <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-2 z-20">
+    <ng-container *ngFor="let banner of heroBanners; let i = index">
+      <button
+        (click)="goToHeroSlide(i)"
+        [class]="currentHeroSlideIndex === i ? 'bg-red-600' : 'bg-gray-400'"
+        class="w-3 h-3 rounded-full transition-colors duration-300"
+      ></button>
+    </ng-container>
+  </div>
+</section>
+
+
+<!-- Highlighted Categories Section (Auto-sliding) -->
+<section class="py-16 bg-gray-100">
+  <div class="container-fluid mx-auto px-4 horizontal-margin-5px">
+    <div class="text-center mb-12">
+      <h2 class="text-4xl font-bold text-black mb-4 text-stroke-black mogra-font">Highlighted Categories</h2>
+      <p class="text-xl text-gray-600">Explore our most popular product categories</p>
+    </div>
+
+    <div *ngIf="highlightedCategories.length > 0" class="relative">
+      <div class="category-slider-container">
+        <div class="category-slider-track"
+             [style.transform]="'translateX(-' + (currentCategorySlideIndex * 100) + '%)'"
+             (mouseenter)="stopCategoryAutoSlide()"
+             (mouseleave)="startCategoryAutoSlide()">
+          <div *ngFor="let category of highlightedCategories; trackBy: trackByCategoryId"
+               class="category-slider-item"
+               [routerLink]="['/products']" [queryParams]="{ category: category.id }">
+            <div class="bg-white rounded-lg shadow-md p-4 text-center hover:shadow-xl transition-all duration-300 cursor-pointer h-full flex flex-col justify-between">
+              <div class="w-24 h-24 mx-auto mb-4 bg-gray-100 rounded-full flex items-center justify-center overflow-hidden">
+                <img *ngIf="category.image_url" [src]="category.image_url" [alt]="category.name" class="w-full h-full object-cover rounded-full">
+                <svg *ngIf="!category.image_url" class="w-12 h-12 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M3 4a2 2 0 00-2 2v10a2 2 0 002 2h14a2 2 0 002-2V6a2 2 0 00-2-2H3zm0 2h14v10H3V6zm3 2a1 1 0 000 2h8a1 1 0 000-2H6z" clip-rule="evenodd"/>
+                </svg>
+              </div>
+              <h3 class="text-lg font-semibold text-black mt-auto">{{ category.name }}</h3>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Navigation Buttons for Categories -->
+      <button
+        (click)="prevCategorySlide()"
+        class="absolute top-1/2 left-0 transform -translate-y-1/2 bg-red-600 bg-opacity-50 text-white p-2 rounded-full shadow-lg hover:bg-opacity-75 transition-all duration-300 z-20 ml-2"
+        [disabled]="totalCategorySlides <= 1"
+      >
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+      </button>
+      <button
+        (click)="nextCategorySlide()"
+        class="absolute top-1/2 right-0 transform -translate-y-1/2 bg-red-600 bg-opacity-50 text-white p-2 rounded-full shadow-lg hover:bg-opacity-75 transition-all duration-300 z-20 mr-2"
+        [disabled]="totalCategorySlides <= 1"
+      >
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+      </button>
+
+      <!-- Pagination Dots for Categories -->
+      <div class="flex justify-center mt-4 space-x-2">
+        <ng-container *ngFor="let slide of [].constructor(totalCategorySlides); let i = index">
+          <button
+            (click)="goToCategorySlide(i)"
+            [class]="currentCategorySlideIndex === i ? 'bg-red-600' : 'bg-gray-400'"
+            class="w-3 h-3 rounded-full transition-colors duration-300"
+          ></button>
+        </ng-container>
+      </div>
+    </div>
+    <div *ngIf="highlightedCategories.length === 0" class="text-center py-12">
+      <p class="text-xl text-gray-600">No highlighted categories available at the moment.</p>
     </div>
   </div>
 </section>
@@ -62,16 +168,16 @@
       </div>
 
       <button
-        (click)="prevSlide()"
+        (click)="prevProductSlide()"
         class="absolute top-1/2 left-0 transform -translate-y-1/2 bg-red-600 bg-opacity-50 text-white p-3 rounded-full shadow-lg hover:bg-opacity-75 transition-all duration-300 z-20 ml-2"
-        [disabled]="totalSlides <= 1"
+        [disabled]="totalProductSlides <= 1"
       >
         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
       </button>
       <button
-        (click)="nextSlide()"
+        (click)="nextProductSlide()"
         class="absolute top-1/2 right-0 transform -translate-y-1/2 bg-red-600 bg-opacity-50 text-white p-3 rounded-full shadow-lg hover:bg-opacity-75 transition-all duration-300 z-20 mr-2"
-        [disabled]="totalSlides <= 1"
+        [disabled]="totalProductSlides <= 1"
       >
         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
       </button>
